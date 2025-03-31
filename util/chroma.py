@@ -73,7 +73,10 @@ if __name__ == "__main__":
 
     # split and chunk the documents to prep for embedding
     print("splitting and chunking documents")
-    chunked = embedding.rec_split_chunk(docs, chunk_size=500, chunk_overlap=50)
+    chunk_size = int(os.getenv("CHUNK_SIZE", 3000))
+    chunk_overlap = int(os.getenv("OVERLAP", 500))
+    print(f"Using chunk_size={chunk_size}, chunk_overlap={chunk_overlap}")
+    chunked = embedding.rec_split_chunk(docs, chunk_size=chunk_size, chunk_overlap=chunk_overlap)
 
     # create persistent vector db of embeddings in chroma
     print(f"uploading documents to chroma collection: {collection_name}")

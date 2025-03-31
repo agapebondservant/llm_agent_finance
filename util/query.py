@@ -9,30 +9,25 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-prompt_template = ChatPromptTemplate.from_template(
-    """
-  Answer the question based ONLY on the following context:
-  {context}
-  - -
-  Given the context information with no prior knowledge,
-  answer the question. If you can't answer the question
-  with the context information, don't try.
-  Original question: {question}
-  """
-)
-
 chat_history_template = ChatPromptTemplate.from_messages(
     [
         (
             "system",
             """
-    Answer the question based ONLY the following context:{context}
+    You are a financial analysis assistant with expertise in interpreting financial reports and economic data.
+    
+    Answer the question based ONLY on the following context:
+    {context}
     - -
-    Given the context information with no prior knowledge,
-    answer the question. If there isn't any contect
-    or you can't answer the question
-    with the context information, don't try,
-    simply say sorry and end the chat.""",
+    
+    Guidelines:
+    1. Use ONLY the information provided in the context.
+    2. If the context contains financial data, cite specific figures, percentages, and trends.
+    3. When referencing information, mention the document and page number if available.
+    4. If the question asks for an opinion or prediction not supported by the context, clarify that you can only provide information based on the given context.
+    5. If there isn't sufficient context or you can't answer the question with the provided information, simply state that you don't have enough information to answer accurately.
+    
+    Remember: Accuracy is critical when discussing financial information.""",
         ),
         MessagesPlaceholder(variable_name="history"),
         ("human", "{question}"),
@@ -41,49 +36,27 @@ chat_history_template = ChatPromptTemplate.from_messages(
 
 
 def format_docs(docs):
-    return "\n\n".join(doc.page_content for doc in docs)
+    formatted_docs = []
+    for i, doc in enumerate(docs):
+        # Extract metadata if available
+        metadata = getattr(doc, 'metadata', {})
+        source = metadata.get('source', 'Unknown source')
+        page = metadata.get('page', 'Unknown page')
+        
+        # Format the document with metadata
+        formatted_doc = f"[Document {i+1}] "
+        if 'page' in metadata:
+            formatted_doc += f"Page {page}: "
+        formatted_doc += doc.page_content
+        
+        formatted_docs.append(formatted_doc)
+    
+    return "\n\n" + "-" * 50 + "\n\n".join(formatted_docs) + "\n\n" + "-" * 50
 
 
 def init_llm():
     llm = OllamaLLM(model=os.getenv("LLM"))
     return llm
-
-
-def query_rag(Chroma_collection, query_text, llm_model, promp_template):
-    """
-    Query a Retrieval-Augmented Generation (RAG) system using Chroma db.
-    Args:
-      - query_text (str): The text to query the RAG system with.
-      -prompt_template (str): Query prompt template
-      inclding context and question
-    Returns:
-      - formatted_response (str): Formatted response
-      including the generated text and sources.
-      - response_text (str): The generated response text.
-    """
-
-    def format_docs(docs):
-        return "\n\n".join(doc.page_content for doc in docs)
-
-    db = Chroma_collection
-    prompt = promp_template
-
-    retriever = db.as_retriever(
-        search_type="similarity_score_threshold",
-        search_kwargs={"score_threshold": 0.5, "k": 5},
-    )
-
-    rag_chain = (
-        {"context": retriever | format_docs, "question": RunnablePassthrough()}
-        | prompt
-        | llm_model
-        | StrOutputParser()
-    )
-
-    for chunk in rag_chain.stream(query_text):
-        print(chunk, end="", flush=True)
-
-    return
 
 
 def query_rag_streamlit(Chroma_collection, llm_model, promp_template):
@@ -99,14 +72,13 @@ def query_rag_streamlit(Chroma_collection, llm_model, promp_template):
       - response_text (str): The generated response text.
     """
 
-    def format_docs(docs):
-        return "\n\n".join(doc.page_content for doc in docs)
+    # Use the global format_docs function
 
     db = Chroma_collection
 
     retriever = db.as_retriever(
         search_type="similarity_score_threshold",
-        search_kwargs={"score_threshold": 0.5, "k": 5},
+        search_kwargs={"score_threshold": 0.3, "k": 8},
     )
 
     context = itemgetter("question") | retriever | format_docs
