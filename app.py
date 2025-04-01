@@ -4,7 +4,7 @@ from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_community.chat_message_histories import (
     StreamlitChatMessageHistory,
 )
-from langchain_community.llms import Ollama
+from langchain_ollama.llms import OllamaLLM
 import os
 
 from util import embedding
@@ -32,8 +32,7 @@ def is_docker():
 if not is_docker():
     llm = query.init_llm()
 else:
-    # for ollama in docker image
-    llm = Ollama(model=llm, base_url="http://ollama-container:11434")
+    llm = OllamaLLM(model=llm, base_url="http://ollama-container:11434")
 
 # Load data from vector db
 db = Chroma(
@@ -44,7 +43,7 @@ db = Chroma(
 )
 
 # Setting the title of the Streamlit application
-st.title("Ollama and Chroma Langchain RAG")
+st.title("Financial Analysis Assistant")
 
 
 msgs = StreamlitChatMessageHistory(key="special_app_key")
@@ -52,7 +51,7 @@ history = StreamlitChatMessageHistory(key="chat_messages")
 
 
 if len(msgs.messages) == 0:
-    msgs.add_ai_message("How can I help you?")
+    msgs.add_ai_message("Hello, how can I help you?")
 
 template = query.chat_history_template
 
