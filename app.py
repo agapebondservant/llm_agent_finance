@@ -14,25 +14,11 @@ from util import query
 chroma_collection_name = os.getenv("CHROMA_COLLECTION_NAME")
 embedding_model = embedding.init_embedding_model()
 chroma_persist_path = os.getenv("CHROMA_PERSIST_PATH")
-llm = os.getenv("LLM")
+api_url = os.getenv("PARASOL_API_URL")
+api_key = os.getenv("PARASOL_API_KEY")
+model_name = os.getenv("LLM_NAME")
 
-# check if docker is running
-def is_docker():
-    def text_in_file(text, filename):
-        try:
-            with open(filename, encoding="utf-8") as lines:
-                return any(text in line for line in lines)
-        except OSError:
-            return False
-
-    cgroup = "/proc/self/cgroup"
-    return os.path.exists("/.dockerenv") or text_in_file("docker", cgroup)
-
-
-if not is_docker():
-    llm = query.init_llm()
-else:
-    llm = OllamaLLM(model=llm, base_url="http://ollama-container:11434")
+llm = query.init_llm(api_url, api_key, model_name)
 
 # Load data from vector db
 db = Chroma(

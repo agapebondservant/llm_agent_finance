@@ -1,22 +1,10 @@
-# Local RAG Chatbot App
+# Financial Agent Support Bot
 
-This is a simple open-source local RAG (Retrieval-Augmented Generation) chatbot application. It utilizes LangChain, Chroma for the vector database, and Ollama for the LLM (Large Language Model). The repository includes example PDF documents, and the functionality to embed and store documents in a new Chroma database collection.
+This chatbot is part of a POC for a FSI use case. 
 
 ## Getting Started
 
 ### Prerequisites
-
-#### Creating a Conda Environment
-
-To set up a new Conda environment, run the following commands:
-
-```zsh
-conda create --name my_project_env
-conda activate my_project_env
-pip install -r requirements.txt
-```
-
-### Installation
 
 1. Clone the repository and navigate to the project directory:
 
@@ -44,7 +32,6 @@ python util/chroma.py ./assets/library
 The results will be stored using your environment variables in a new Chroma database defined by `CHROMA_COLLECTION_NAME` and `CHROMA_PERSIST_PATH`.
 
 ### Running the Application
-
 
 ```zsh
 docker-compose up

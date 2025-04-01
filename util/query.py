@@ -2,12 +2,9 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 from langchain_ollama.llms import OllamaLLM
+from langchain_community.llms import VLLMOpenAI
 from operator import itemgetter
 import os
-
-from dotenv import load_dotenv
-
-load_dotenv()
 
 chat_history_template = ChatPromptTemplate.from_messages(
     [
@@ -26,6 +23,9 @@ chat_history_template = ChatPromptTemplate.from_messages(
     3. When referencing information, mention the document and page number if available.
     4. If the question asks for an opinion or prediction not supported by the context, clarify that you can only provide information based on the given context.
     5. If there isn't sufficient context or you can't answer the question with the provided information, simply state that you don't have enough information to answer accurately.
+    
+    Be concise, but provide a detailed response.
+    IMPORTANT: Provide ONLY your response without any prefixes like "AI:" or role markers. Do not include simulated conversation or dialogue in your response.
     
     Remember: Accuracy is critical when discussing financial information.""",
         ),
@@ -54,8 +54,15 @@ def format_docs(docs):
     return "\n\n" + "-" * 50 + "\n\n".join(formatted_docs) + "\n\n" + "-" * 50
 
 
-def init_llm():
-    llm = OllamaLLM(model=os.getenv("LLM"))
+def init_llm(api_url, api_key, model_name):
+
+    llm = VLLMOpenAI(
+        openai_api_key=api_key,
+        openai_api_base=api_url+"/v1",
+        model_name=model_name,
+        temperature=0.7,
+        max_tokens=1024
+    )
     return llm
 
 
@@ -75,14 +82,15 @@ def query_rag_streamlit(Chroma_collection, llm_model, promp_template):
     # Use the global format_docs function
 
     db = Chroma_collection
+    output_parser = StrOutputParser()
 
     retriever = db.as_retriever(
         search_type="similarity_score_threshold",
-        search_kwargs={"score_threshold": 0.3, "k": 8},
+        search_kwargs={"score_threshold": 0.3, "k": 3},
     )
 
     context = itemgetter("question") | retriever | format_docs
     first_step = RunnablePassthrough.assign(context=context)
-    chain = first_step | promp_template | llm_model
+    chain = first_step | promp_template | llm_model | output_parser
 
     return chain
