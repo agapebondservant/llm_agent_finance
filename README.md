@@ -43,7 +43,7 @@ You can create a Chroma database and embed documents using `util/chroma.py`. It 
 Run the following command:
 
 ```zsh
-python util/chroma.py ./assets/library
+python util/chroma.py ./assets/library/docling_out
 ```
 
 The results will be stored using your environment variables in a new Chroma database defined by `CHROMA_COLLECTION_NAME` and `CHROMA_PERSIST_PATH`.
