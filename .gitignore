@@ -5,7 +5,7 @@ __pycache__/
 *.DS_Store
 # notebooks
 *ipynb
-
+.DS_Store
 # docker ollama files
 ollama/
 
