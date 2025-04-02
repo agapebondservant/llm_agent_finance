@@ -10,7 +10,7 @@ __pycache__/
 ollama/
 
 # data
-assets/
+# assets/
 
 # database
 db/
