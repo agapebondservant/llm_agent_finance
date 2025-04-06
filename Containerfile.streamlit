@@ -6,6 +6,6 @@ COPY . .
 
 RUN apt-get update \
     && apt-get -y install libpq-dev gcc \
-    && pip install -r requirements.txt
+    && pip install --no-cache-dir -r requirements.txt
 
 CMD ["streamlit", "run", "app.py", "--server.port", "8501", "--server.address", "0.0.0.0"]

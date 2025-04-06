@@ -1,9 +1,6 @@
-import os
 import glob
 from docling.datamodel.base_models import InputFormat
 from docling.datamodel.pipeline_options import (
-    AcceleratorDevice,
-    AcceleratorOptions,
     PdfPipelineOptions,
 )
 from docling.document_converter import DocumentConverter, PdfFormatOption
@@ -31,7 +28,9 @@ class PDFConverter:
             pipeline_options.ocr_options = OcrMacOptions()
 
             return DocumentConverter(
-                format_options={InputFormat.PDF: PdfFormatOption(pipeline_options=pipeline_options)}
+                format_options={
+                    InputFormat.PDF: PdfFormatOption(pipeline_options=pipeline_options)
+                }
             )
         elif self.mode == "ocr":
             pipeline_options = PdfPipelineOptions()
@@ -41,7 +40,9 @@ class PDFConverter:
             pipeline_options.table_structure_options.do_cell_matching = True
 
             return DocumentConverter(
-                format_options={InputFormat.PDF: PdfFormatOption(pipeline_options=pipeline_options)}
+                format_options={
+                    InputFormat.PDF: PdfFormatOption(pipeline_options=pipeline_options)
+                }
             )
         else:
             return DocumentConverter()
@@ -64,4 +65,3 @@ class PDFConverter:
             conv_result = self.doc_converter.convert(i)
             with open(f"{output_dir}/{conv_result.input.file.stem}.md", "w") as f:
                 f.write(conv_result.document.export_to_markdown())
-

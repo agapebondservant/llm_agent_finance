@@ -1,6 +1,6 @@
 # Financial Agent Support Bot
 
-This chatbot is part of a POC for a FSI use case. 
+This chatbot is part of a POC for a FSI use case.
 
 ## Getting Started
 
@@ -51,7 +51,7 @@ The results will be stored using your environment variables in a new Chroma data
 ### Running the Application
 
 ```zsh
-docker-compose up
+podman-compose up
 ```
 
 You should be able to view the app in your browser at the following URL:
