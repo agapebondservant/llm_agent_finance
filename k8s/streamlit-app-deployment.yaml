@@ -20,6 +20,7 @@ spec:
       labels:
         io.kompose.service: streamlit-app
     spec:
+      serviceAccountName: streamlit-app-secrets
       containers:
         - env:
             - name: CHROMA_COLLECTION_NAME
@@ -61,9 +62,10 @@ spec:
                   name: streamlit-secret
             - name: CHROMA_HOST
               value: "http://chroma-db:8000"
-          image: pdavis327/llm_agent_finance-streamlit-app:latest
+          image: quay.io/rh-ee-petdavis/llm_agent_finance-streamlit-app:latest
           name: streamlit-app
           ports:
             - containerPort: 8501
               protocol: TCP
+          
       restartPolicy: Always

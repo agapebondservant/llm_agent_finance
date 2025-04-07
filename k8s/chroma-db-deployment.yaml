@@ -24,7 +24,7 @@ spec:
     spec:
       initContainers:
         - name: init-db
-          image: pdavis327/finance_rag_assets:latest
+          image: quay.io/rh-ee-petdavis/finance_rag_assets
           command: ["/bin/sh", "-c", "if [ ! -f /data/chroma.sqlite3 ]; then cp -rfv /assets/* /data/; fi"]
           volumeMounts:
             - name: chroma-storage
