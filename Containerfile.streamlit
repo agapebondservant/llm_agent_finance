@@ -4,6 +4,8 @@ WORKDIR /app
 
 COPY . .
 
+RUN chmod -R a+rX /app
+
 RUN apt-get update \
     && apt-get -y install libpq-dev gcc \
     && pip install --no-cache-dir -r requirements.txt
