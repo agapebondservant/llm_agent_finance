@@ -36,10 +36,7 @@ spec:
                   key: CHUNK_SIZE
                   name: streamlit-secret
             - name: EMBEDDING_MODEL
-              valueFrom:
-                secretKeyRef:
-                  key: EMBEDDING_MODEL
-                  name: streamlit-secret
+              value: "/app/models/all-MiniLM-L6-v2"
             - name: LLM_NAME
               valueFrom:
                 secretKeyRef:
@@ -62,10 +59,17 @@ spec:
                   name: streamlit-secret
             - name: CHROMA_HOST
               value: "http://chroma-db:8000"
-          image: quay.io/rh-ee-petdavis/llm_agent_finance-streamlit-app:latest
+          image: quay.io/rh-ee-petdavis/llm-agent-finance-streamlit-app:latest
           name: streamlit-app
           ports:
             - containerPort: 8501
               protocol: TCP
-          
+          volumeMounts:
+            - name: secret-volume
+              mountPath: /etc/secret-volume
+              readOnly: true
+      volumes:
+        - name: secret-volume
+          secret:
+            secretName: streamlit-secret
       restartPolicy: Always
