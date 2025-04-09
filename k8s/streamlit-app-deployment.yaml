@@ -54,12 +54,12 @@ spec:
           ports:
             - containerPort: 8501
               protocol: TCP
-      #     volumeMounts:
-      #       - name: secret-volume
-      #         mountPath: /etc/secret-volume
-      #         readOnly: true
-      # volumes:
-      #   - name: secret-volume
-      #     secret:
-      #       secretName: streamlit-secret
+          volumeMounts:
+            - name: secret-volume
+              mountPath: /etc/secret-volume
+              readOnly: true
+      volumes:
+        - name: secret-volume
+          secret:
+            secretName: streamlit-secret
       restartPolicy: Always

@@ -23,7 +23,10 @@ spec:
         io.kompose.service: ollama-container
     spec:
       containers:
-        - command:
+        - resources:
+            limits:
+              memory: 8Gi
+          command:
             - /usr/bin/bash
             - /entrypoint.sh
           env:
@@ -33,16 +36,16 @@ spec:
                   key: LLM
                   name: streamlit-secret
           image: quay.io/rh-ee-petdavis/finance-agent-ollama-container
-          livenessProbe:
-            exec:
-              command:
-                - curl
-                - -f
-                - http://localhost:11434
-            failureThreshold: 5
-            initialDelaySeconds: 5
-            periodSeconds: 10
-            timeoutSeconds: 10
+          # livenessProbe:
+          #   exec:
+          #     command:
+          #       - curl
+          #       - -f
+          #       - http://localhost:11434
+          #   failureThreshold: 5
+          #   initialDelaySeconds: 5
+          #   periodSeconds: 10
+          #   timeoutSeconds: 10
           name: ollama-container
           ports:
             - containerPort: 11434
@@ -51,14 +54,20 @@ spec:
             - mountPath: /entrypoint.sh
               name: ollama-container-cm0
               subPath: entrypoint.sh
-            # - name: secret-volume
-            #   mountPath: /etc/secret-volume
-            #   readOnly: true
+            - name: secret-volume
+              mountPath: /etc/secret-volume
+              readOnly: true
+            - name: ollama-data
+              mountPath: /.ollama
+          tty: true
       restartPolicy: Always
       volumes:
-        # - name: secret-volume
-        #   secret:
-        #     secretName: streamlit-secret
+        - name: secret-volume
+          secret:
+            secretName: streamlit-secret
+        - name: ollama-data
+          persistentVolumeClaim:
+            claimName: ollama-data
         - configMap:
             items:
               - key: entrypoint.sh
