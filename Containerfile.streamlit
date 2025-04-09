@@ -1,14 +1,11 @@
 FROM python:3.11.11-slim
 
-# Create a non-root user with a home directory
 RUN useradd -m -u 1001 appuser
 
 WORKDIR /app
 
-# Copy source code before installing dependencies
 COPY . .
 
-# Install system dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         libpq-dev \
@@ -16,21 +13,15 @@ RUN apt-get update && \
         git \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
 RUN pip install --no-cache-dir --upgrade pip \
  && pip install --no-cache-dir -r requirements.txt
 
-# Download model and preload it to cache to the correct location
 RUN python -c "from sentence_transformers import SentenceTransformer; model = SentenceTransformer('all-MiniLM-L6-v2'); model.save('/app/models/all-MiniLM-L6-v2')"
 
-# Fix permissions so non-root user can access everything
 RUN chmod -R a+rX /app
 
-# Switch to non-root user
 USER 1001
 
-# Set the model path in the environment
 ENV EMBEDDING_MODEL="/app/models/all-MiniLM-L6-v2"
 
-# Run the app using the local model path
 CMD ["streamlit", "run", "app.py", "--server.port", "8501", "--server.address", "0.0.0.0"]

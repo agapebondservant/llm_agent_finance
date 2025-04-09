@@ -2,6 +2,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 from langchain_community.llms import VLLMOpenAI
+from langchain_ollama.llms import OllamaLLM
 from operator import itemgetter
 
 chat_history_template = ChatPromptTemplate.from_messages(
@@ -10,27 +11,26 @@ chat_history_template = ChatPromptTemplate.from_messages(
             "system",
             """You are a financial analysis assistant with expertise in interpreting financial reports and economic data.
 
-Previous conversation:
-{history}
+            Previous conversation:
+            {history}
 
-Answer the question based ONLY on the following context:
-{context}
-- -
+            Use the following context, if any was returned, to help you answer your question:
+            {context}
+            - -
 
-Guidelines:
-1. Use ONLY the information provided in the context.
-2. If the context contains financial data, cite specific figures, percentages, and trends.
-3. When referencing information, mention the document and page number if available.
-4. If the question asks for an opinion or prediction not supported by the context, clarify that you can only provide information based on the given context.
-5. If there isn't sufficient context or you can't answer the question with the provided information, simply state that you don't have enough information to answer accurately.
-6. If there are conflicting or ambiguous information in the context, acknowledge the conflict and provide a balanced view based on the available information.
-7. If the question is unclear or ambiguous, ask for clarification before providing a response.
+            Guidelines:
+            1. Prioritize any returned context in answering the user question. 
+            2. If the context contains financial data, cite specific figures, percentages, and trends.
+            3. When referencing information, always place the citation at the end of the relevant statement, and include the document and page number if available.
+            4. If the question is unclear or ambiguous, ask for clarification before providing a response.
+            5. Do not repeat or summarize the response after the citation. Ensure the citation is the last element in the response.
+            6. Do not include conversation history, your thought patterns, or previous responses in the response output.
+            7. Do not include or respond with any harmful or hurtful content.
+            8. Be concise, but provide a thoughtful response. 
 
-IMPORTANT: Provide your response directly without any prefixes like "AI:" or role markers. Do not include simulated conversation or dialogue in your response.
-
-Remember: Accuracy is critical when discussing financial information.""",
-        ),
-        ("human", "{question}"),
+            Remember: Accuracy is critical when discussing financial information.""",
+                    ),
+                    ("human", "{question}"),
     ]
 )
 
@@ -54,15 +54,19 @@ def format_docs(docs):
     return "\n\n" + "-" * 50 + "\n\n".join(formatted_docs) + "\n\n" + "-" * 50
 
 
-def init_llm(api_url, api_key, model_name):
+# def init_llm(api_url, api_key, model_name):
 
-    llm = VLLMOpenAI(
-        openai_api_key=api_key,
-        openai_api_base=api_url + "/v1",
-        model_name=model_name,
-        temperature=0.7,
-        max_tokens=1024,
-    )
+#     llm = VLLMOpenAI(
+#         openai_api_key=api_key,
+#         openai_api_base=api_url + "/v1",
+#         model_name=model_name,
+#         temperature=0.7,
+#         max_tokens=2048,
+#     )
+#     return llm
+
+def init_llm():
+    llm = OllamaLLM(model=os.getenv("LLM"))
     return llm
 
 
@@ -86,7 +90,7 @@ def query_rag_streamlit(Chroma_collection, llm_model, promp_template):
 
     retriever = db.as_retriever(
         search_type="similarity_score_threshold",
-        search_kwargs={"score_threshold": 0.7, "k": 3},
+        search_kwargs={"score_threshold": 0.7, "k": 5},
     )
 
     context = itemgetter("question") | retriever | format_docs

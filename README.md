@@ -25,17 +25,17 @@ To convert pdf to md using chrome run specify the input,output, and mode paramet
 
 non ocr, default:
  ```zsh
-python convert_pdf.py ./assets/library/ocr_test ./assets/library/docling_out/ocr
+python convert_pdf.py ./assets/library/documents ./assets/library/docling_out
  ```
 
  or if you want to do ocr
  ```zsh
-python convert_pdf.py ./assets/library ./assets/library/docling_out --mode ocr
+python convert_pdf.py ./assets/library/documents ./assets/library/docling_out --mode ocr
  ```
 
  or if you have mac and want to do ocr
  ```zsh
-python convert_pdf.py ./assets/library ./assets/library/docling_out --mode mac_ocr
+python convert_pdf.py ./assets/library/documents ./assets/library/docling_out --mode mac_ocr
  ```
 
 You can create a Chroma database and embed documents using `util/chroma.py`. It requires one argument: the filepath to the documents you wish to embed and store.
