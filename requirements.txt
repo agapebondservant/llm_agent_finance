@@ -12,3 +12,4 @@ accelerate==1.6.0
 sentence-transformers==4.0.2
 unstructured==0.17.2
 unstructured[md]
+unstructured[pdf]

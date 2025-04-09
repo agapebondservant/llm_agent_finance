@@ -1,5 +1,25 @@
 services:
-
+  ollama-container:
+      build:
+        context: .
+        dockerfile: ./Containerfile.ollama
+      container_name: ollama-container
+      ports:
+        - "11434:11434"
+      volumes:
+          # - ./ollama/ollama:/root/.ollama
+          - ./entrypoint.sh:/entrypoint.sh
+      entrypoint: ["/usr/bin/bash", "/entrypoint.sh"]
+      env_file:
+        - .env
+      networks:
+        - db
+      healthcheck:
+        test: ["CMD", "curl", "-f", "http://localhost:11434"]
+        interval: 10s
+        timeout: 10s
+        retries: 5
+        start_period: 5s
   chroma-db:
     build:
       context: .
