@@ -55,6 +55,7 @@ spec:
             - name: CHROMA_HOST
               value: "http://chroma-db:8000"
           image: quay.io/oawofolurh/llm-agent-finance-streamlit-app:latest
+          imagePullPolicy: Always
           name: streamlit-app
           ports:
             - containerPort: 8501

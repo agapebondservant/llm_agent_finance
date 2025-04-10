@@ -38,6 +38,7 @@ spec:
             - name: EMBEDDING_MODEL
               value: "all-MiniLM-L6-v2"
           image: ghcr.io/chroma-core/chroma:latest
+          imagePullPolicy: Always
           name: chroma-db
           ports:
             - containerPort: 8000

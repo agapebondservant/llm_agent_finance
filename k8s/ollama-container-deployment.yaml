@@ -46,6 +46,7 @@ spec:
                   key: TAVILY_API_KEY
                   name: streamlit-secret
           image: quay.io/oawofolurh/finance-agent-ollama-container
+          imagePullPolicy: Always
           # livenessProbe:
           #   exec:
           #     command:
