@@ -15,6 +15,7 @@ load_dotenv()
 
 # Load environment variables
 chroma_collection_name = os.getenv("CHROMA_COLLECTION_NAME")
+chroma_host = os.getenv("CHROMA_HOST")
 embedding_model = embedding.init_embedding_model()
 # api_url = os.getenv("PARASOL_API_URL")
 # api_key = os.getenv("PARASOL_API_KEY")
@@ -28,9 +29,7 @@ llm = loader.init_llm("LLAMA")
 # llm = query.init_llm(api_url, api_key, model_name)
 
 # Load data from vector db
-# client = chromadb.Client()
-# client = chromadb.HttpClient(host="chroma-db", port=8000)
-client = chromadb.HttpClient(host="chroma-chromadb.chromadb.svc.cluster.local", port=8000)
+client = chromadb.HttpClient(host=chroma_host, port=8000)
 
 # # Setup Chroma DB
 db = Chroma(
