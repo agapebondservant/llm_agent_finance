@@ -38,20 +38,20 @@ spec:
             - name: EMBEDDING_MODEL
               value: "/app/models/all-MiniLM-L6-v2"
             - name: GRANITE_OLLAMA_LLM
-			  valueFrom:
-			    secretKeyRef:
-			      key: GRANITE_OLLAMA_LLM
-			      name: streamlit-secret
-			- name: LLAMA_OLLAMA_LLM
-			  valueFrom:
-			    secretKeyRef:
-			      key: LLAMA_OLLAMA_LLM
-			      name: streamlit-secret
-			- name: TAVILY_API_KEY
-			  valueFrom:
-				secretKeyRef:
-				  key: TAVILY_API_KEY
-			      name: streamlit-secret
+              valueFrom:
+                secretKeyRef:
+                  key: GRANITE_OLLAMA_LLM
+                  name: streamlit-secret
+            - name: LLAMA_OLLAMA_LLM
+              valueFrom:
+                secretKeyRef:
+                  key: LLAMA_OLLAMA_LLM
+                  name: streamlit-secret
+            - name: TAVILY_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: TAVILY_API_KEY
+                  name: streamlit-secret
             - name: CHROMA_HOST
               value: "http://chroma-db:8000"
           image: quay.io/oawofolurh/llm-agent-finance-streamlit-app:latest
