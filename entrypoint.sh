@@ -12,8 +12,10 @@ pid=$!
 sleep 5
 
 # Retrieve the model defined in the .env file (default to tinyllama if not set)
-echo "🔴 Retrieving model: $LLM..."
-ollama pull "$LLM"
+echo "🔴 Retrieving model: $GRANITE_OLLAMA_LLM..."
+ollama pull "$GRANITE_OLLAMA_LLM"
+echo "🔴 Retrieving model: $LLAMA_OLLAMA_LLM..."
+ollama pull "$LLAMA_OLLAMA_LLM"
 echo "🟢 Done!"
 
 # Wait for Ollama process to finish.

@@ -3,7 +3,11 @@ from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 from langchain_community.llms import VLLMOpenAI
 from langchain_ollama.llms import OllamaLLM
+from langchain_community.llms import Ollama
 from operator import itemgetter
+from util import agentic
+from langchain_ollama import ChatOllama
+from langchain_openai import ChatOpenAI
 
 chat_history_template = ChatPromptTemplate.from_messages(
     [
@@ -54,22 +58,6 @@ def format_docs(docs):
     return "\n\n" + "-" * 50 + "\n\n".join(formatted_docs) + "\n\n" + "-" * 50
 
 
-# def init_llm(api_url, api_key, model_name):
-
-#     llm = VLLMOpenAI(
-#         openai_api_key=api_key,
-#         openai_api_base=api_url + "/v1",
-#         model_name=model_name,
-#         temperature=0.7,
-#         max_tokens=2048,
-#     )
-#     return llm
-
-def init_llm():
-    llm = OllamaLLM(model=os.getenv("LLM"))
-    return llm
-
-
 def query_rag_streamlit(Chroma_collection, llm_model, promp_template):
     """
     Query a Retrieval-Augmented Generation (RAG) system using Chroma db.
@@ -98,3 +86,6 @@ def query_rag_streamlit(Chroma_collection, llm_model, promp_template):
     chain = first_step | promp_template | llm_model | output_parser
 
     return chain
+
+def agentic_graph_streamlit():
+    return agentic.invoke_graph()

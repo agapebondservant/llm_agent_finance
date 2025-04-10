@@ -1,4 +1,7 @@
 # Financial Agent Support Bot
+<div style="background-color:#EAFFF1; border: 1px solid lightgreen; padding: 30px">
+NOTE: Originally forked from <a href="https://github.com/pdavis327/llm_agent_finance" target="_blank">this repo</a>.
+</div>
 
 This chatbot is part of a POC for a FSI use case.
 
@@ -48,7 +51,7 @@ python util/chroma.py ./assets/library/docling_out
 
 The results will be stored using your environment variables in a new Chroma database defined by `CHROMA_COLLECTION_NAME` and `CHROMA_PERSIST_PATH`.
 
-### Running the Application
+### Running the Application locally
 
 ```zsh
 podman-compose up
@@ -58,4 +61,16 @@ You should be able to view the app in your browser at the following URL:
 
 ```
 http://0.0.0.0:8501
+```
+
+### Running the Application on Openshift (NOTE: Work In Progress)
+1. Generate `streamlit-secret`:
+```zsh
+oc delete secret streamlit-secret --ignore-not-found
+oc create secret generic streamlit-secret --from-env-file=.env
+```
+
+2. Generate builds:
+```zsh
+
 ```

@@ -142,6 +142,7 @@ env.bak/
 venv.bak/
 secret.yaml
 *.ca.crt
+venv*/
 
 
 # Spyder project settings

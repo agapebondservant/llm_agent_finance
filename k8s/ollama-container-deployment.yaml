@@ -30,11 +30,21 @@ spec:
             - /usr/bin/bash
             - /entrypoint.sh
           env:
-            - name: LLM
+            - name: GRANITE_OLLAMA_LLM
               valueFrom:
                 secretKeyRef:
-                  key: LLM
+                  key: GRANITE_OLLAMA_LLM
                   name: streamlit-secret
+			- name: LLAMA_OLLAMA_LLM
+			  valueFrom:
+		        secretKeyRef:
+		          key: LLAMA_OLLAMA_LLM
+		          name: streamlit-secret
+			- name: TAVILY_API_KEY
+			  valueFrom:
+				secretKeyRef:
+				  key: TAVILY_API_KEY
+		          name: streamlit-secret
           image: quay.io/rh-ee-petdavis/finance-agent-ollama-container
           # livenessProbe:
           #   exec:
