@@ -35,7 +35,7 @@ spec:
                 secretKeyRef:
                   key: GRANITE_OLLAMA_LLM
                   name: streamlit-secret
-			- name: LLAMA_OLLAMA_LLM
+		    - name: LLAMA_OLLAMA_LLM
 			  valueFrom:
 		        secretKeyRef:
 		          key: LLAMA_OLLAMA_LLM
