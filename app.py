@@ -29,7 +29,8 @@ llm = loader.init_llm("LLAMA")
 
 # Load data from vector db
 # client = chromadb.Client()
-client = chromadb.HttpClient(host="chroma-db", port=8000)
+# client = chromadb.HttpClient(host="chroma-db", port=8000)
+client = chromadb.HttpClient(host="chroma-chromadb.chromadb.svc.cluster.local", port=8000)
 
 # # Setup Chroma DB
 db = Chroma(
