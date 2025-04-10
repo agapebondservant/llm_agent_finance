@@ -72,9 +72,9 @@ oc create secret generic streamlit-secret --from-env-file=.env
 
 2. Generate builds (requires write access):
 ```zsh
-docker build -t quay.io/oawofolurh/finance_rag_assets -f Containerfile.chroma --push .
-docker build -t quay.io/oawofolurh/finance-agent-ollama-container -f Containerfile.ollama --push .
-docker build -t quay.io/oawofolurh/llm-agent-finance-streamlit-app -f Containerfile.streamlit --push .
+docker build -t quay.io/oawofolurh/finance_rag_assets -f Containerfile.chroma --platform linux/amd64 --push .
+docker build -t quay.io/oawofolurh/finance-agent-ollama-container -f Containerfile.ollama --platform linux/amd64 --push .
+docker build -t quay.io/oawofolurh/llm-agent-finance-streamlit-app -f Containerfile.streamlit --platform linux/amd64 --push .
 ```
 
 3. Deploy app:
