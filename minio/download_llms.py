@@ -13,7 +13,6 @@ bucket_name = "llm"
 
 def upload_file_to_minio(repo_id, prefix_key, fullfilename=None):
     path = f"./{prefix_key}" if fullfilename is None else fullfilename
-    snapshot_download(repo_id=repo_id, cache_dir=path, token=os.getenv('HF_TOKEN'))
     for filename in os.listdir(path):
         fullfilename = path + '/' + filename
         print("Uploading:", fullfilename)
@@ -26,5 +25,8 @@ def upload_file_to_minio(repo_id, prefix_key, fullfilename=None):
                 print(f"An error occurred while uploading {fullfilename}: {e}")
 
 
+snapshot_download(repo_id='meta-llama/Llama-3.1-8B-Instruct', cache_dir='./llama', token=os.getenv('HF_TOKEN'))
 upload_file_to_minio('meta-llama/Llama-3.1-8B-Instruct', "llama")
+
+snapshot_download(repo_id='ibm-granite/granite-3.0-8b-instruct', cache_dir='./granite', token=os.getenv('HF_TOKEN'))
 upload_file_to_minio('ibm-granite/granite-3.0-8b-instruct', "granite")
