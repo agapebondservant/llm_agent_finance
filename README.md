@@ -27,16 +27,19 @@ This chatbot is part of a POC for a FSI use case.
 To convert pdf to md using chrome run specify the input,output, and mode parameters when running `convert_pdf.py`
 
 non ocr, default:
+
  ```zsh
 python convert_pdf.py ./assets/library/documents ./assets/library/docling_out
  ```
 
  or if you want to do ocr
+ 
  ```zsh
 python convert_pdf.py ./assets/library/documents ./assets/library/docling_out --mode ocr
  ```
 
  or if you have mac and want to do ocr
+ 
  ```zsh
 python convert_pdf.py ./assets/library/documents ./assets/library/docling_out --mode mac_ocr
  ```
@@ -63,14 +66,17 @@ You should be able to view the app in your browser at the following URL:
 http://0.0.0.0:8501
 ```
 
-### Running the Application on Openshift (NOTE: Work In Progress)
+### Running the Application on Openshift
+
 1. Generate streamlit-secret:
+
 ```zsh
 oc delete secret streamlit-secret --ignore-not-found
 oc create secret generic streamlit-secret --from-env-file=.env
 ```
 
 2. Generate builds (requires write access):
+
 ```zsh
 docker build -t quay.io/oawofolurh/finance_rag_assets -f Containerfile.chroma --platform linux/amd64 --push .
 docker build -t quay.io/oawofolurh/finance-agent-ollama-container -f Containerfile.ollama --platform linux/amd64 --push .
@@ -78,6 +84,25 @@ docker build -t quay.io/oawofolurh/llm-agent-finance-streamlit-app -f Containerf
 ```
 
 3. Deploy app:
+
 ```zsh
 oc apply -f k8s/
+```
+
+4. Create a route for the app:
+
+```zsh
+oc expose svc streamlit-app --port 8501
+```
+
+5. View the deployment to validate that there are no issues:
+
+```zh
+watch oc get all
+```
+
+6. The app should be accessible at the FQDN below:
+
+```zh
+oc get route streamlit-app -ojson | jq -r '.spec.host'
 ```
