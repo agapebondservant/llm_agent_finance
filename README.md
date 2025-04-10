@@ -106,3 +106,11 @@ watch oc get all
 ```zh
 oc get route streamlit-app -ojson | jq -r '.spec.host'
 ```
+
+### Serving LLMs on Openshift AI
+1. Install Minio: (see <a href="https://ai-on-openshift.io/tools-and-applications/minio/minio/#log-on-to-your-project-in-openshift-console" target="_blank">link</a>)
+
+```zh
+oc new-project minio --display-name="Minio S3 for LLMs"
+oc apply -f k8s/minio/minio-all.yaml
+```
