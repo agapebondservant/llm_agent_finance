@@ -64,13 +64,13 @@ http://0.0.0.0:8501
 ```
 
 ### Running the Application on Openshift (NOTE: Work In Progress)
-1. Generate `streamlit-secret`:
+1. Generate streamlit-secret:
 ```zsh
 oc delete secret streamlit-secret --ignore-not-found
 oc create secret generic streamlit-secret --from-env-file=.env
 ```
 
-2. Generate builds:
+2. Generate builds (requires write access):
 ```zsh
 docker build -t quay.io/oawofolurh/finance_rag_assets -f Containerfile.chroma --push .
 docker build -t quay.io/oawofolurh/finance-agent-ollama-container -f Containerfile.ollama --push .
