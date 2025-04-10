@@ -113,4 +113,5 @@ oc get route streamlit-app -ojson | jq -r '.spec.host'
 ```zh
 oc new-project minio --display-name="Minio S3 for LLMs"
 oc apply -f k8s/minio/minio-all.yaml
+HF_TOKEN='your huggingface token' MINIO_ACCESS_KEY='minio' MINIO_SECRET_KEY='minio123' MINIO_ENDPOINT=$(oc get route minio-ui -ojson | jq -r '.spec.host') python k8s/minio/download_llms.py
 ```
