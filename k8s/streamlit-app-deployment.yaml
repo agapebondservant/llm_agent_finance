@@ -37,7 +37,7 @@ spec:
                   name: streamlit-secret
             - name: EMBEDDING_MODEL
               value: "/app/models/all-MiniLM-L6-v2"
-			- name: GRANITE_OLLAMA_LLM
+            - name: GRANITE_OLLAMA_LLM
 			  valueFrom:
 			    secretKeyRef:
 			      key: GRANITE_OLLAMA_LLM
