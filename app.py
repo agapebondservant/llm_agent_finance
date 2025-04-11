@@ -114,13 +114,8 @@ with tab2:
                 graph = query.agentic_graph_streamlit()
                 for event in graph.stream({"messages": [HumanMessage(content=prompt)]}, config, stream_mode="values"):
                     response = event['messages'][-1]
-                    
-                    """Debug"""
-                    print(response)
-                    """"""""""""
-                    
-                    if 'content' in response and response['content']:
-                        st.chat_message("user").write(response['content'])
+                    if response.content:
+                        st.chat_message("user").write(response.content)
             st.success('Done!')
         except Exception as e:
             st.write(f"Error generating response: {str(e)}")
