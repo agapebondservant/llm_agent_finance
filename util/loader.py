@@ -61,9 +61,11 @@ def init_llm(llm_family, agentic=False):
         print(f"vllm_params={vllm_params}\nollama_params={ollama_params}\nrag_params={rag_params}\nagentic_params={agentic_params}")
         
         if api_url is not None and api_key is not None:
+            print("Will use vLLM...")
             llm_name = os.getenv("{llm_family}_API_LLM")
             llm = ChatOpenAI(**{**vllm_params, **agentic_params} ) if agentic else VLLMOpenAI(**{**vllm_params, **rag_params} )
         else:
+            print("Will use Ollama..")
             llm_name = os.getenv("{llm_family}_OLLAMA_LLM")
             llm = ChatOllama(**{**ollama_params, **agentic_params} ) if agentic else Ollama(**ollama_params)
     
