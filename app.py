@@ -87,7 +87,7 @@ with tab1:
 
 with tab2:
     st.title("Financial Article Writer")
-    msgs = StreamlitChatMessageHistory(key="article_key")
+    msgs2 = StreamlitChatMessageHistory(key="article_key")
     # history = StreamlitChatMessageHistory(key="article_messages")
     
     # def stream_graph_text():
@@ -99,10 +99,10 @@ with tab2:
     #             yield response['content']
     #         time.sleep(0.02)
     
-    if len(msgs.messages) == 0:
-        msgs.add_ai_message("I can help you write a financial article. What topic are you interested in?")
+    if len(msgs2.messages) == 0:
+        msgs2.add_ai_message("I can help you write a financial article. What topic are you interested in?")
         
-    for msg in msgs.messages:
+    for msg in msgs2.messages:
         st.chat_message(msg.type).write(msg.content)
         
     if prompt := st.chat_input(key='articles'):
@@ -113,7 +113,9 @@ with tab2:
                 config = {"configurable": {"thread_id": 12, "recursion_limit": 10}}
                 graph = query.agentic_graph_streamlit()
                 for event in graph.stream({"messages": [HumanMessage(content=prompt)]}, config, stream_mode="values"):
-                    st.chat_message("ai").write(event['messages'][-1].content)
+                    response = event['messages'][-1]
+                    if response.content:
+                        st.chat_message("ai").write(event['messages'][-1].content)
             st.success('Done!')
         except Exception as e:
             st.write(f"Error generating response: {str(e)}")
