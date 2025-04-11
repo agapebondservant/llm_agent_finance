@@ -12,7 +12,6 @@ from langchain_core.messages import AIMessage, HumanMessage
 import time
 from dotenv import load_dotenv
 load_dotenv()
-import json
 
 # Load environment variables
 chroma_collection_name = os.getenv("CHROMA_COLLECTION_NAME")
@@ -105,9 +104,9 @@ with tab2:
                 config = {"configurable": {"thread_id": 12, "recursion_limit": 10}}
                 graph = query.agentic_graph_streamlit()
                 for event in graph.stream({"messages": [HumanMessage(content=prompt)]}, config, stream_mode="values"):
-                    response = json.loads(event['messages'][-1])
-                    if 'content' in response:
-                        st.chat_message("ai").write(response['content'])
+                    response = event['messages'][-1]
+                    if response.content:
+                        st.chat_message("ai").write(response.content)
             st.success('Done!')
         except Exception as e:
             st.write(f"Error generating response: {str(e)}")
