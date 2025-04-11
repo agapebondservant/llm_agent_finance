@@ -122,9 +122,4 @@ oc create secret generic streamlit-secret --from-env-file=.env
 ```zh
 oc new-project minio --display-name="Minio S3 for LLMs"
 oc apply -f k8s/minio/minio-all.yaml
-python -m venv venv1
-source venv1/bin/activate
-pip install -r minio/minio-requirements.txt
-HF_TOKEN='your huggingface token' MINIO_ACCESS_KEY='minio' MINIO_SECRET_KEY='minio123' MINIO_ENDPOINT=$(oc get route minio-api -ojson | jq -r '.spec.host') python minio/download_llms.py
-deactivate
 ```
