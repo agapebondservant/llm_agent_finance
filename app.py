@@ -95,7 +95,7 @@ with tab2:
         graph = query.agentic_graph_streamlit()
         for event in graph.stream({"messages": [HumanMessage(content=prompt)]}, config, stream_mode="values"):
             response = event['messages'][-1]
-            if content in response and content:
+            if 'content' in response and response['content']:
                 yield response['content']
             time.sleep(0.02)
     
