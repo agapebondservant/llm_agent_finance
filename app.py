@@ -10,6 +10,7 @@ from util import embedding, query, loader
 from langchain_community.llms import Ollama
 from langchain_core.messages import AIMessage, HumanMessage
 import time
+import traceback
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -109,4 +110,5 @@ with tab2:
                         st.chat_message("ai").write(response.content)
             st.success('Done!')
         except Exception as e:
+            traceback.print_exc()
             st.write(f"Error generating response: {str(e)}")
