@@ -113,9 +113,7 @@ with tab2:
                 config = {"configurable": {"thread_id": 12, "recursion_limit": 10}}
                 graph = query.agentic_graph_streamlit()
                 for event in graph.stream({"messages": [HumanMessage(content=prompt)]}, config, stream_mode="values"):
-                    response = event['messages'][-1]
-                    if response.content:
-                        st.chat_message("ai").write(response.content)
+                    st.chat_message("ai").write(event['messages'][-1])
             st.success('Done!')
         except Exception as e:
             st.write(f"Error generating response: {str(e)}")
