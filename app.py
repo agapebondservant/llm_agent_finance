@@ -23,7 +23,7 @@ embedding_model = embedding.init_embedding_model()
 # llm = os.getenv("LLM")
 # llm = Ollama(model=llm, base_url="http://ollama-container:11434")
 # llm = Ollama(model=llm)
-llm = loader.init_llm("LLAMA")
+llm = loader.init_llm("GRANITE")
 
 # Initialize LLM
 # llm = query.init_llm(api_url, api_key, model_name)
