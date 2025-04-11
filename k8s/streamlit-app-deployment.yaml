@@ -47,6 +47,26 @@ spec:
                 secretKeyRef:
                   key: LLAMA_OLLAMA_LLM
                   name: streamlit-secret
+            - name: GRANITE_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: GRANITE_API_KEY
+                  name: streamlit-secret
+            - name: LLAMA_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: LLAMA_API_KEY
+                  name: streamlit-secret
+            - name: GRANITE_API_URL
+              valueFrom:
+                secretKeyRef:
+                  key: GRANITE_API_URL
+                  name: streamlit-secret
+            - name: LLAMA_API_URL
+              valueFrom:
+                secretKeyRef:
+                  key: LLAMA_API_URL
+                  name: streamlit-secret
             - name: TAVILY_API_KEY
               valueFrom:
                 secretKeyRef:
