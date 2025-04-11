@@ -90,14 +90,14 @@ with tab2:
     msgs = StreamlitChatMessageHistory(key="article_key")
     # history = StreamlitChatMessageHistory(key="article_messages")
     
-    def stream_graph_text():
-        config = {"configurable": {"thread_id": 12, "recursion_limit": 10}}
-        graph = query.agentic_graph_streamlit()
-        for event in graph.stream({"messages": [HumanMessage(content=prompt)]}, config, stream_mode="values"):
-            response = event['messages'][-1]
-            if 'content' in response and response['content']:
-                yield response['content']
-            time.sleep(0.02)
+    # def stream_graph_text():
+    #     config = {"configurable": {"thread_id": 12, "recursion_limit": 10}}
+    #     graph = query.agentic_graph_streamlit()
+    #     for event in graph.stream({"messages": [HumanMessage(content=prompt)]}, config, stream_mode="values"):
+    #         response = event['messages'][-1]
+    #         if 'content' in response and response['content']:
+    #             yield response['content']
+    #         time.sleep(0.02)
     
     if len(msgs.messages) == 0:
         msgs.add_ai_message("I can help you write a financial article. What topic are you interested in?")
@@ -110,7 +110,12 @@ with tab2:
         st.chat_message("human").write(prompt)
         try:
             with st.spinner("Generating article...", show_time=True):
-                st.chat_message("ai").write_stream(stream_graph_text)
+                config = {"configurable": {"thread_id": 12, "recursion_limit": 10}}
+                graph = query.agentic_graph_streamlit()
+                for event in graph.stream({"messages": [HumanMessage(content=prompt)]}, config, stream_mode="values"):
+                    response = event['messages'][-1]
+                    if 'content' in response and response['content']:
+                        st.chat_message("user").write(response['content'])
             st.success('Done!')
         except Exception as e:
             st.write(f"Error generating response: {str(e)}")
