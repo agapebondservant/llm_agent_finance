@@ -68,14 +68,11 @@ http://0.0.0.0:8501
 
 ### Running the Application on Openshift
 
-1. Generate streamlit-secret:
+1. Generate streamlit-secret (skip this step if environment variables were not changed):
 
-```zsh
-oc delete secret streamlit-secret --ignore-not-found
-oc create secret generic streamlit-secret --from-env-file=.env
-```
+See **Updating Environment Variables** below.
 
-2. Generate builds (requires write access):
+2. Generate builds (requires write access - skip this step if images were not rebuilt):
 
 ```zsh
 docker build -t quay.io/oawofolurh/finance_rag_assets -f Containerfile.chroma --platform linux/amd64 --push .
@@ -86,10 +83,11 @@ docker build -t quay.io/oawofolurh/llm-agent-finance-streamlit-app -f Containerf
 3. Deploy app:
 
 ```zsh
+oc delete -f k8s/
 oc apply -f k8s/
 ```
 
-4. Create a route for the app:
+4. Create a route for the app if it does not already exist:
 
 ```zsh
 oc expose svc streamlit-app --port 8501
@@ -105,6 +103,17 @@ watch oc get all
 
 ```zh
 oc get route streamlit-app -ojson | jq -r '.spec.host'
+```
+
+### Updating Environment Variables
+
+1. Update the .env file as appropriate.
+
+2. Generate streamlit-secret (skip this step if environment variables were not changed):
+
+```zsh
+oc delete secret streamlit-secret --ignore-not-found
+oc create secret generic streamlit-secret --from-env-file=.env
 ```
 
 ### Serving LLMs on Openshift AI
