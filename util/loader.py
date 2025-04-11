@@ -6,8 +6,15 @@ from langchain_ollama.llms import OllamaLLM
 from langchain_community.llms import Ollama
 import sys
 import traceback
+import logging
 from dotenv import load_dotenv
 load_dotenv()
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+handler = logging.StreamHandler()
+logger.addHandler(handler)
+
 
 
 # def init_llm(api_url, api_key, model_name):
@@ -57,15 +64,15 @@ def init_llm(llm_family, agentic=False):
         }
         
         """ Debugging : """
-        print(f"vLLM model={vllm_model_name}\nOllama model={ollama_model_name}\n=============\n")
-        print(f"vllm_params={vllm_params}\nollama_params={ollama_params}\nrag_params={rag_params}\nagentic_params={agentic_params}")
+        logger.debug(f"vLLM model={vllm_model_name}\nOllama model={ollama_model_name}\n=============\n")
+        logger.debug(f"vllm_params={vllm_params}\nollama_params={ollama_params}\nrag_params={rag_params}\nagentic_params={agentic_params}")
         
         if api_url is not None and api_key is not None:
-            print("Will use vLLM...")
+            logger.info("Will use vLLM...")
             llm_name = os.getenv("{llm_family}_API_LLM")
             llm = ChatOpenAI(**{**vllm_params, **agentic_params} ) if agentic else VLLMOpenAI(**{**vllm_params, **rag_params} )
         else:
-            print("Will use Ollama..")
+            logger.info("Will use Ollama..")
             llm_name = os.getenv("{llm_family}_OLLAMA_LLM")
             llm = ChatOllama(**{**ollama_params, **agentic_params} ) if agentic else Ollama(**ollama_params)
     
