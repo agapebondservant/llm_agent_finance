@@ -64,6 +64,7 @@ def init_llm(llm_family, agentic=False):
         }
         
         """ Debugging : """
+        logger.info(f"{llm_family}\n================================\n")
         logger.info(f"vLLM model={vllm_model_name}\nOllama model={ollama_model_name}\n=============\n")
         logger.info(f"vllm_params={vllm_params}\nollama_params={ollama_params}\nrag_params={rag_params}\nagentic_params={agentic_params}")
         
