@@ -12,21 +12,13 @@ from langchain_core.messages import AIMessage, HumanMessage
 import time
 from dotenv import load_dotenv
 load_dotenv()
+import json
 
 # Load environment variables
 chroma_collection_name = os.getenv("CHROMA_COLLECTION_NAME")
 chroma_host = os.getenv("CHROMA_HOST")
 embedding_model = embedding.init_embedding_model()
-# api_url = os.getenv("PARASOL_API_URL")
-# api_key = os.getenv("PARASOL_API_KEY")
-# model_name = os.getenv("LLM_NAME")
-# llm = os.getenv("LLM")
-# llm = Ollama(model=llm, base_url="http://ollama-container:11434")
-# llm = Ollama(model=llm)
 llm = loader.init_llm("GRANITE")
-
-# Initialize LLM
-# llm = query.init_llm(api_url, api_key, model_name)
 
 # Load data from vector db
 client = chromadb.HttpClient(host=chroma_host, port=8000)
@@ -113,7 +105,9 @@ with tab2:
                 config = {"configurable": {"thread_id": 12, "recursion_limit": 10}}
                 graph = query.agentic_graph_streamlit()
                 for event in graph.stream({"messages": [HumanMessage(content=prompt)]}, config, stream_mode="values"):
-                    st.chat_message("ai").write(event['messages'][-1])
+                    response = json.loads(event['messages'][-1])
+                    if 'content' in response:
+                        st.chat_message("ai").write(response['content'])
             st.success('Done!')
         except Exception as e:
             st.write(f"Error generating response: {str(e)}")
