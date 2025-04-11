@@ -22,12 +22,12 @@ spec:
     spec:
       serviceAccountName: streamlit-app-secrets
       containers:
-        - envFrom:
-            - secretRef:
-              name: streamlit-secret
           image: quay.io/oawofolurh/llm-agent-finance-streamlit-app:latest
           imagePullPolicy: Always
           name: streamlit-app
+          envFrom:
+            - secretRef:
+              name: streamlit-secret
           ports:
             - containerPort: 8501
               protocol: TCP
