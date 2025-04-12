@@ -15,19 +15,6 @@ logger.setLevel(logging.INFO)
 handler = logging.StreamHandler()
 logger.addHandler(handler)
 
-
-
-# def init_llm(api_url, api_key, model_name):
-
-#     llm = VLLMOpenAI(
-#         openai_api_key=api_key,
-#         openai_api_base=api_url + "/v1",
-#         model_name=model_name,
-#         temperature=0.7,
-#         max_tokens=2048,
-#     )
-#     return llm
-
 def init_llm(llm_family, agentic=False):
     """
     Initializes LLM based on the family (Llama, Granite, etc) 
@@ -44,7 +31,7 @@ def init_llm(llm_family, agentic=False):
         
         vllm_params = {
             "openai_api_key": api_key, 
-            "openai_api_base": f"{api_url}/v1", 
+            "openai_api_base": api_url, 
             "model_name": vllm_model_name,
         }
         
@@ -63,17 +50,16 @@ def init_llm(llm_family, agentic=False):
             "request_timeout": 300, 
         }
         
-        """ Debugging : """
-        logger.info(f"{llm_family}\n================================\n")
-        logger.debug(f"vLLM model={vllm_model_name}\nOllama model={ollama_model_name}\n=============\n")
-        logger.debug(f"vllm_params={vllm_params}\nollama_params={ollama_params}\nrag_params={rag_params}\nagentic_params={agentic_params}")
+        logger.info(f"{llm_family}\n================================\n\n\n")
+        logger.info(f"vLLM model={vllm_model_name}\nOllama model={ollama_model_name}\n=============\n\n\n")
+        logger.info(f"vllm_params={vllm_params}\n\nollama_params={ollama_params}\n\nrag_params={rag_params}\n\nagentic_params={agentic_params}\n\n\n")
         
         if api_url is not None and api_key is not None:
-            logger.info("Will use vLLM...")
+            logger.info(f"Will use vLLM for {llm_family}\n================================\n")
             llm_name = os.getenv("{llm_family}_API_LLM")
             llm = ChatOpenAI(**{**vllm_params, **agentic_params} ) if agentic else VLLMOpenAI(**{**vllm_params, **rag_params} )
         else:
-            logger.info("Will use Ollama..")
+            logger.info(f"Will use Ollama for {llm_family}\n================================\n")
             llm_name = os.getenv("{llm_family}_OLLAMA_LLM")
             llm = ChatOllama(**{**ollama_params, **agentic_params} ) if agentic else Ollama(**ollama_params)
     

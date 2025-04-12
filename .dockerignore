@@ -21,5 +21,7 @@ Containerfile*
 *.pt
 *.onnx
 models/
+
+# Other
 venv*/
 .env*

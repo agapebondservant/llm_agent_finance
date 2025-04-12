@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.35.0 (HEAD)
+  labels:
+    io.kompose.service: streamlit-app
+  name: streamlit-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: streamlit-app
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.35.0 (HEAD)
+      labels:
+        io.kompose.service: streamlit-app
+    spec:
+      serviceAccountName: streamlit-app-secrets
+      initContainers:
+        - name: setup-certs
+          image: python
+          command: 
+            - /bin/sh
+          args:
+            - '-ec'
+            - 'apt update; cp /tmp/selfsigned-ca-certificates/* /usr/local/share/ca-certificates/; rm /etc/ssl/certs/ca-certificates.crt; update-ca-certificates; cp /etc/ssl/certs/* /tmp/ca-certificates/;'
+          volumeMounts:
+            - name: selfsigned-ca-volume
+              mountPath: /tmp/selfsigned-ca-certificates
+            - name: scratch-volume
+              mountPath: /tmp/ca-certificates
+      containers:
+        - image: quay.io/oawofolurh/llm-agent-finance-streamlit-app:latest
+          imagePullPolicy: Always
+          name: streamlit-app
+          envFrom:
+            - secretRef:
+                name: streamlit-secret
+          ports:
+            - containerPort: 8501
+              protocol: TCP
+          volumeMounts:
+            - name: scratch-volume
+              mountPath: /etc/ssl/certs/ca-certificates
+              subPath: ca-certificates
+            - name: secret-volume
+              mountPath: /etc/secret-volume
+              readOnly: true
+      volumes:
+      - name: secret-volume
+        secret:
+          secretName: streamlit-secret
+      - name: selfsigned-ca-volume
+        configMap:
+          name: selfsigned-ca
+      - name: scratch-volume
+        emptyDir: {}
+      restartPolicy: Always

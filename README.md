@@ -68,11 +68,27 @@ http://0.0.0.0:8501
 
 ### Running the Application on Openshift
 
-1. Generate streamlit-secret (skip this step if environment variables were not changed):
+1. Download required self-signed certificates:
+
+```zsh
+export DOWNLOAD_DIR=cacerts
+mkdir -p $DOWNLOAD_DIR
+oc project default
+oc apply -f k8s/ubuntu/ubuntu.yaml
+export UBUNTU_POD=$(oc get pods -ndefault --no-headers |  awk '{if ($1 ~ "ubuntu") print $1}')
+oc wait --for=condition=Ready=true pod $UBUNTU_POD --timeout=300s
+oc exec $UBUNTU_POD -- /bin/sh -c 'apt update; apt install -y openssl;' 
+oc exec $UBUNTU_POD -- /bin/sh -c 'openssl s_client -showcerts  -connect granite.llm-financial.svc.cluster.local:443 </dev/null 2>&1 | openssl x509' > ${DOWNLOAD_DIR}/granite.crt
+oc delete configmap selfsigned-ca --ignore-not-found
+oc create configmap selfsigned-ca --from-file=${DOWNLOAD_DIR}/granite.crt
+oc delete pod $UBUNTU_POD
+```
+
+2. Generate/update streamlit-secret (skip this step if the .env file was not changed and no new certs were downloaded):
 
 See **Updating Environment Variables** below.
 
-2. Generate builds (requires write access - skip this step if images were not rebuilt):
+3. Generate builds (requires write access - skip this step if images do not need to be rebuilt):
 
 ```zsh
 docker build -t quay.io/oawofolurh/finance_rag_assets -f Containerfile.chroma --platform linux/amd64 --push .
@@ -80,26 +96,26 @@ docker build -t quay.io/oawofolurh/finance-agent-ollama-container -f Containerfi
 docker build -t quay.io/oawofolurh/llm-agent-finance-streamlit-app -f Containerfile.streamlit --platform linux/amd64 --push .
 ```
 
-3. Deploy app:
+4. Deploy app:
 
 ```zsh
 oc delete -f k8s/
 oc apply -f k8s/
 ```
 
-4. Create a route for the app if it does not already exist:
+5. Create a route for the app if it does not already exist:
 
 ```zsh
 oc expose svc streamlit-app --port 8501
 ```
 
-5. View the deployment to validate that there are no issues:
+6. View the deployment to validate that there are no issues:
 
 ```zh
 watch oc get all
 ```
 
-6. The app should be accessible at the FQDN below:
+7. The app should be accessible at the FQDN below:
 
 ```zh
 oc get route streamlit-app -ojson | jq -r '.spec.host'

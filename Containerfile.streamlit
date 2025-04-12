@@ -13,7 +13,7 @@ RUN apt-get update && \
         git \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pip install --no-cache-dir --upgrade pip \
+RUN pip install --no-cache-dir --use-feature=truststore --upgrade pip  \
  && pip install --no-cache-dir -r requirements.txt
 
 RUN python -c "from sentence_transformers import SentenceTransformer; model = SentenceTransformer('all-MiniLM-L6-v2'); model.save('/app/models/all-MiniLM-L6-v2')"
@@ -26,4 +26,4 @@ ENV EMBEDDING_MODEL="/app/models/all-MiniLM-L6-v2"
 
 COPY . .
 
-CMD ["streamlit", "run", "app.py", "--server.port", "8501", "--server.address", "0.0.0.0"]
+CMD ["streamlit", "run", "app.py", "--server.port", "8501", "--server.address", "0.0.0.0", "--logger.level", "debug"]
