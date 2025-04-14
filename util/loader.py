@@ -9,6 +9,7 @@ import traceback
 import logging
 from dotenv import load_dotenv
 load_dotenv()
+import httpx
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -33,6 +34,7 @@ def init_llm(llm_family, agentic=False):
             "openai_api_key": api_key, 
             "openai_api_base": api_url, 
             "model_name": vllm_model_name,
+            "http_async_client": httpx.AsyncClient(verify=False),
         }
         
         ollama_params = {
