@@ -78,7 +78,7 @@ oc apply -f k8s/ubuntu/ubuntu.yaml
 export UBUNTU_POD=$(oc get pods -ndefault --no-headers |  awk '{if ($1 ~ "ubuntu") print $1}')
 oc wait --for=condition=Ready=true pod $UBUNTU_POD --timeout=300s
 oc exec $UBUNTU_POD -- /bin/sh -c 'apt update; apt install -y openssl;' 
-oc exec $UBUNTU_POD -- /bin/sh -c 'openssl s_client -showcerts  -connect granite.llm-financial.svc.cluster.local:443 </dev/null 2>&1 | openssl x509' > ${DOWNLOAD_DIR}/granite.crt
+oc exec $UBUNTU_POD -- /bin/sh -c 'openssl s_client -showcerts  -connect granite-32.llm-financial.svc.cluster.local:443 </dev/null 2>&1 | openssl x509' > ${DOWNLOAD_DIR}/granite.crt
 oc delete configmap selfsigned-ca --ignore-not-found
 oc create configmap selfsigned-ca --from-file=${DOWNLOAD_DIR}/granite.crt
 oc delete pod $UBUNTU_POD
