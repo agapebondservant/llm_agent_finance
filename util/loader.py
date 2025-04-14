@@ -34,7 +34,6 @@ def init_llm(llm_family, agentic=False):
             "openai_api_key": api_key, 
             "openai_api_base": api_url, 
             "model_name": vllm_model_name,
-            "http_async_client": httpx.AsyncClient(verify=False),
         }
         
         ollama_params = {
@@ -50,6 +49,7 @@ def init_llm(llm_family, agentic=False):
         agentic_params = {
             "temperature": 0, 
             "request_timeout": 300, 
+            "http_async_client": httpx.AsyncClient(verify=False),
         }
         
         logger.info(f"{llm_family}\n================================\n\n\n")
